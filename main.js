@@ -13,7 +13,6 @@ canvas.height = CELL_SIZE * ROWS;
 let grid = [];
 
 let isMouseDown = false;
-//let isErasing = false;
 
 for (let row = 0; row < ROWS; row++) {
     grid[row] = [];
@@ -42,18 +41,12 @@ for (let col = 1; col < COLS; col++) {
     ctx.stroke();
 }
 
-//prevents the context menu from showing up when you right click
-canvas.addEventListener(`contextmenu`, (e) => {
-    e.preventDefault();
-});
-
 canvas.addEventListener(`mousedown`, (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     const clickedRow = Math.floor(mouseY / CELL_SIZE);
     const clickedCol = Math.floor(mouseX / CELL_SIZE);
-    //console.log(clickedRow, clickedCol);
 
     //left mouse button
     if(e.button === 0) {
@@ -74,7 +67,7 @@ canvas.addEventListener(`mousedown`, (e) => {
         ctx.fillRect(clickedCol * CELL_SIZE, clickedRow * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
         grid[clickedRow][clickedCol] = 0;
-        //isMouseDown = true;
+        isMouseDown = true;
         printGrid();
     }
 });
@@ -86,10 +79,9 @@ canvas.addEventListener(`mousemove`, (e) => {
         const mouseY = e.clientY - rect.top;
         const clickedRow = Math.floor(mouseY / CELL_SIZE);
         const clickedCol = Math.floor(mouseX / CELL_SIZE);
-        //console.log(clickedRow, clickedCol);
     
         //left mouse button held
-        if(e.button === 0) {
+        if(e.buttons === 1) {
             const colorSelect = document.getElementById(`colorSelect`);
             const selectedColor = colorSelect.value;
         
@@ -101,7 +93,7 @@ canvas.addEventListener(`mousemove`, (e) => {
         }
     
         //right mouse button held
-        if(e.button === 2) {
+        if(e.buttons === 2) {
             ctx.fillStyle = `white`;
             ctx.fillRect(clickedCol * CELL_SIZE, clickedRow * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 
@@ -114,6 +106,11 @@ canvas.addEventListener(`mousemove`, (e) => {
 //set this to window.addEventListener instead of canvas.addEventListener to fix the mouse down off canvas.
 window.addEventListener(`mouseup`, (e) => {
     isMouseDown = false;
+});
+
+//prevents the context menu from showing up when you right click
+canvas.addEventListener(`contextmenu`, (e) => {
+    e.preventDefault();
 });
 
 function printGrid() {
